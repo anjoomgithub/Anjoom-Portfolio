@@ -12,7 +12,9 @@ const Projects = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/projects/');
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+                const response = await axios.get(`${apiUrl}/api/projects/`);
+
                 console.log("Projects loaded:", response.data);
                 setProjects(response.data);
             } catch (error) {
