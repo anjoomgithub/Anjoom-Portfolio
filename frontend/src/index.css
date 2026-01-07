@@ -1,0 +1,495 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    /* "Cyber-Core" Palette - High Contrast & Techy */
+    --bg-primary: #050505;
+    /* True Black/Darkest Grey */
+    --bg-secondary: #0a0a0a;
+
+    /* Neon Accents */
+    --primary: #00f3ff;
+    /* Electric Cyan */
+    --secondary: #7000ff;
+    /* Electric Purple */
+    --accent: #0aff00;
+    /* Matrix Green */
+    --error: #ff003c;
+    /* Cyber Red */
+
+    /* Sharp Glows */
+    --primary-glow: rgba(0, 243, 255, 0.4);
+    --secondary-glow: rgba(112, 0, 255, 0.4);
+
+    /* Text */
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
+    --text-dim: #52525b;
+
+    /* Glass & Borders */
+    --glass-bg: rgba(10, 10, 10, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.05);
+
+    /* Gradients */
+    --tech-gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --dark-gradient: linear-gradient(180deg, rgba(20, 20, 20, 0.8) 0%, rgba(5, 5, 5, 0.9) 100%);
+
+    /* Fonts */
+    --font-heading: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    /* The "Dev" Font */
+    --font-body: 'Outfit', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+    line-height: 1.6;
+}
+
+::selection {
+    background: var(--primary);
+    color: #000;
+}
+
+/* --- BACKGROUND FX --- */
+
+/* CRT Scanline Overlay */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9998;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Grid Background */
+.cyber-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background-size: 40px 40px;
+    background-image:
+        linear-gradient(to right, rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+    pointer-events: none;
+    animation: grid-flicker 4s infinite;
+}
+
+@keyframes grid-flicker {
+    0% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+/* Ambient Spotlights */
+.spotlight {
+    position: fixed;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    z-index: -1;
+    pointer-events: none;
+    animation: drift 20s infinite alternate;
+}
+
+.spot-1 {
+    top: -10%;
+    left: -10%;
+    background: radial-gradient(circle, var(--primary), transparent 70%);
+}
+
+.spot-2 {
+    bottom: -10%;
+    right: -10%;
+    background: radial-gradient(circle, var(--secondary), transparent 70%);
+    animation-delay: -5s;
+}
+
+@keyframes drift {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(50px, -50px) scale(1.1);
+    }
+}
+
+/* HUD Card Style - Tech Corners */
+.hud-card {
+    position: relative;
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    /* Clip corners */
+    clip-path: polygon(20px 0, 100% 0,
+            100% calc(100% - 20px), calc(100% - 20px) 100%,
+            0 100%, 0 20px);
+    /* Optimizations for flickering */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.hud-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 1px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.hud-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 1px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* --- TYPOGRAPHY --- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    color: #fff;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+}
+
+.mono-text {
+    font-family: var(--font-mono);
+}
+
+.cyber-text {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cyber-text::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #fff 20%, var(--text-muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.neon-text {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+}
+
+/* --- COMPONENTS --- */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Glass Panel (HUD Style) */
+.glass-panel {
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+}
+
+/* Tech Buttons */
+.btn-cyber {
+    position: relative;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-cyber::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--primary);
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.btn-cyber:hover {
+    color: #000;
+    box-shadow: 0 0 25px var(--primary-glow);
+}
+
+.btn-cyber:hover::before {
+    left: 0;
+}
+
+.btn-glitch {
+    position: relative;
+    padding: 1rem 2.5rem;
+    background: var(--bg-secondary);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.btn-glitch:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Utilities */
+.section-padding {
+    padding: 8rem 0;
+}
+
+@media (max-width: 768px) {
+    .section-padding {
+        padding: 5rem 0;
+    }
+
+    .container {
+        padding: 0 1.5rem;
+        /* Reduced padding for mobile */
+    }
+
+    h1 {
+        font-size: 2.5rem !important;
+        /* Smaller base for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+        /* Even smaller padding for very small screens */
+    }
+
+    .section-padding {
+        padding: 4rem 0;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 0;
+}
+
+/* Compatibility for existing components */
+.glass-card {
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+}
+
+.contact-card {
+    padding: 4rem 2rem;
+    border-radius: 30px;
+}
+
+@media (max-width: 768px) {
+    .contact-card {
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+/* Responsive Grid Utilities */
+.responsive-grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+}
+
+.responsive-grid-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+@media (max-width: 640px) {
+    .responsive-grid-auto-fit {
+        grid-template-columns: 1fr;
+    }
+
+    .responsive-grid-projects {
+        grid-template-columns: 1fr;
+        /* Full width cards on mobile */
+    }
+}
+
+.responsive-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 640px) {
+    .responsive-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+    mix-blend-mode: difference;
+}
+
+.custom-cursor.hovered {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 243, 255, 0.1);
+    border-color: transparent;
+}
+
+.custom-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+
+    .custom-cursor,
+    .custom-cursor-dot {
+        display: none;
+    }
+}
+
+.hero-section {
+    min-height: 100vh;
+    padding-top: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 100px;
+        align-items: flex-start;
+        /* Better for mobile scrolling */
+    }
+}
