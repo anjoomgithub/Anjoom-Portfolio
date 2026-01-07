@@ -1,7 +1,0 @@
-DriveHub || readmes/drivehub_readme.md
-Zolvi Advertising (UAE) || readmes/zolvi_readme.md
-Deccor Aluminium & Interiors || readmes/deccor_readme.md
-AI Summarizer Tool || readmes/ai_summarizer_readme.md
-Apexio Labs || readmes/apexio_readme.md
-Distribution Management System || readmes/dms_sample.md
-Gym Management System || readmes/gym_management_readme.md
