@@ -8,24 +8,18 @@ import remarkGfm from 'remark-gfm';
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
-            setLoading(true);
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
                 const response = await axios.get(`${apiUrl}/api/projects/`);
 
                 console.log("Projects loaded:", response.data);
                 setProjects(response.data);
-                setError(null);
             } catch (error) {
                 console.error("Error loading projects:", error);
-                setError("SYSTEM_OFFLINE: UNABLE TO RETRIEVE ARCHIVE DATA.");
-            } finally {
-                setLoading(false);
+                // Keep default/fallback data just in case
             }
         };
         fetchProjects();
@@ -78,151 +72,164 @@ const Projects = () => {
                     variants={container}
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }} // Reduced margin offset
                     className="responsive-grid-projects"
                 >
-                    {loading ? (
-                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--accent)' }}>
-                            <div className="mono-text" style={{ fontSize: '1.2rem' }}>INITIALIZING_SECURE_FETCH...</div>
-                        </div>
-                    ) : error ? (
-                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--danger, #f43f5e)' }}>
-                            <div className="mono-text" style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>{error}</div>
-                            <button onClick={() => window.location.reload()} className="btn-cyber" style={{ fontSize: '0.8rem' }}>RETRY_CONNECTION</button>
-                        </div>
-                    ) : projects.length === 0 ? (
-                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-                            <div className="mono-text" style={{ fontSize: '1.2rem' }}>NO_DATA_RECORDS_FOUND</div>
-                        </div>
-                    ) : (
-                        projects.map((project) => (
-                            <motion.div
-                                key={project.id}
-                                variants={item}
-                                className="hud-card"
-                                whileHover={{ y: -5, scale: 1.01 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                style={{
-                                    overflow: 'hidden',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%',
-                                    position: 'relative'
-                                }}
-                            >
-                                {/* card content remains the same */}
-                                <div style={{
-                                    height: '240px',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                                    background: '#050505'
-                                }}>
-                                    {project.image ? (
-                                        <>
-                                            <div style={{
-                                                position: 'absolute',
-                                                inset: 0,
-                                                backgroundImage: `url(${project.image})`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center',
-                                                filter: 'blur(20px) brightness(0.3)',
-                                                transform: 'scale(1.2)',
-                                                opacity: 0.8
-                                            }}></div>
-                                            <motion.img
-                                                src={project.image}
-                                                alt={project.title}
-                                                whileHover={{ scale: 1.05 }}
-                                                transition={{ duration: 0.4 }}
-                                                style={{
-                                                    position: 'relative',
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'contain',
-                                                    zIndex: 1,
-                                                    padding: '1rem',
-                                                    filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))'
-                                                }}
-                                            />
-                                        </>
-                                    ) : (
+                    {projects.map((project) => (
+                        <motion.div
+                            key={project.id}
+                            variants={item}
+                            className="hud-card"
+                            whileHover={{ y: -5, scale: 1.01 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            style={{
+                                // borderRadius removed for HUD look
+                                overflow: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '100%',
+                                position: 'relative',
+                                group: 'project-card',
+                                // perspective: '1000px', // Removed to reduce flickering
+                                // transformStyle: 'preserve-3d' // Removed to reduce flickering
+                            }}
+                        >
+                            {/* Image Container */}
+                            <div style={{
+                                height: '240px',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                                background: '#050505'
+                            }}>
+                                {project.image ? (
+                                    <>
+                                        {/* Blurred Backdrop for Fill */}
                                         <div style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            background: 'radial-gradient(circle at center, #1e293b, #0f172a)'
+                                            position: 'absolute',
+                                            inset: 0,
+                                            backgroundImage: `url(${project.image})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                            filter: 'blur(20px) brightness(0.3)',
+                                            transform: 'scale(1.2)', // Prevent blur edges
+                                            opacity: 0.8
                                         }}></div>
-                                    )}
+
+                                        {/* Main Image - Fully Visible */}
+                                        <motion.img
+                                            src={project.image}
+                                            alt={project.title}
+                                            whileHover={{ scale: 1.05 }}
+                                            transition={{ duration: 0.4 }}
+                                            style={{
+                                                position: 'relative',
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                zIndex: 1,
+                                                padding: '1rem', // Add breathing room
+                                                filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))'
+                                            }}
+                                        />
+                                    </>
+                                ) : (
                                     <div style={{
-                                        position: 'absolute',
-                                        inset: 0,
-                                        background: 'linear-gradient(to top, rgba(5,5,5, 1) 0%, transparent 20%)',
-                                        zIndex: 2,
-                                        pointerEvents: 'none'
+                                        width: '100%',
+                                        height: '100%',
+                                        background: 'radial-gradient(circle at center, #1e293b, #0f172a)'
                                     }}></div>
+                                )}
+
+                                {/* Subtle Overlay for Integration */}
+                                <div style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: 'linear-gradient(to top, rgba(5,5,5, 1) 0%, transparent 20%)',
+                                    zIndex: 2,
+                                    pointerEvents: 'none'
+                                }}></div>
+                            </div>
+
+                            <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
+                                <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                    <h3 style={{ fontSize: '1.4rem', fontWeight: '700', lineHeight: 1.3, color: 'white', fontFamily: 'var(--font-heading)' }}>{project.title}</h3>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent)' }}></span>
+                                    </div>
                                 </div>
 
-                                <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
-                                    <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                        <h3 style={{ fontSize: '1.4rem', fontWeight: '700', lineHeight: 1.3, color: 'white' }}>{project.title}</h3>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent)' }}></span>
-                                        </div>
-                                    </div>
+                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', flex: 1, fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                    {project.description}
+                                </p>
 
-                                    <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', flex: 1, fontSize: '0.9rem', lineHeight: '1.6' }}>
-                                        {project.description}
-                                    </p>
+                                {/* Tech Stack Tags */}
+                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+                                    {project.tech_stack.split(',').slice(0, 3).map(tech => (
+                                        <span key={tech} className="mono-text" style={{
+                                            fontSize: '0.7rem',
+                                            background: 'rgba(255, 255, 255, 0.03)',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            padding: '0.3rem 0.6rem',
+                                            borderRadius: '2px',
+                                            color: 'var(--text-dim)',
+                                            letterSpacing: '0.5px'
+                                        }}>
+                                            {tech.trim()}
+                                        </span>
+                                    ))}
+                                </div>
 
-                                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-                                        {project.tech_stack.split(',').slice(0, 3).map(tech => (
-                                            <span key={tech} className="mono-text" style={{
-                                                fontSize: '0.7rem',
-                                                background: 'rgba(255, 255, 255, 0.03)',
-                                                border: '1px solid rgba(255, 255, 255, 0.1)',
-                                                padding: '0.3rem 0.6rem',
-                                                borderRadius: '2px',
-                                                color: 'var(--text-dim)',
-                                                letterSpacing: '0.5px'
-                                            }}>
-                                                {tech.trim()}
-                                            </span>
-                                        ))}
-                                    </div>
+                                {/* Action Buttons - Permanently Visible */}
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '1rem',
+                                    marginTop: 'auto',
+                                    paddingTop: '1.5rem',
+                                    borderTop: '1px solid rgba(255, 255, 255, 0.05)'
+                                }}>
+                                    <button
+                                        onClick={() => setSelectedProject(project)}
+                                        className="btn-cyber"
+                                        style={{
+                                            fontSize: '0.8rem',
+                                            padding: '0.8rem',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            gap: '0.5rem',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        <FileText size={16} /> SYSTEM_LOGS
+                                    </button>
 
-                                    <div style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: '1fr 1fr',
-                                        gap: '1rem',
-                                        marginTop: 'auto',
-                                        paddingTop: '1.5rem',
-                                        borderTop: '1px solid rgba(255, 255, 255, 0.05)'
-                                    }}>
-                                        <button
-                                            onClick={() => setSelectedProject(project)}
-                                            className="btn-cyber"
-                                            style={{ fontSize: '0.8rem', padding: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', width: '100%' }}
+                                    {project.link ? (
+                                        <a
+                                            href={project.link}
+                                            target="_blank"
+                                            className="btn-glitch"
+                                            style={{
+                                                fontSize: '0.8rem',
+                                                padding: '0.8rem',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                textDecoration: 'none',
+                                                textAlign: 'center'
+                                            }}
                                         >
-                                            <FileText size={16} /> SYSTEM_LOGS
-                                        </button>
-
-                                        {project.link ? (
-                                            <a
-                                                href={project.link}
-                                                target="_blank"
-                                                className="btn-glitch"
-                                                style={{ fontSize: '0.8rem', padding: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', textAlign: 'center' }}
-                                            >
-                                                LIVE_DEMO <ExternalLink size={16} />
-                                            </a>
-                                        ) : (
-                                            <button disabled className="btn-glitch" style={{ opacity: 0.5, cursor: 'not-allowed', fontSize: '0.8rem' }}>OFFLINE</button>
-                                        )}
-                                    </div>
+                                            LIVE_DEMO <ExternalLink size={16} />
+                                        </a>
+                                    ) : (
+                                        <button disabled className="btn-glitch" style={{ opacity: 0.5, cursor: 'not-allowed', fontSize: '0.8rem' }}>OFFLINE</button>
+                                    )}
                                 </div>
-                            </motion.div>
-                        ))
-                    )}
+                            </div>
+                        </motion.div>
+                    ))}
                 </motion.div>
 
                 <div style={{ textAlign: 'center', marginTop: '6rem' }}>

@@ -7,7 +7,6 @@ class Project(models.Model):
     tech_stack = models.CharField(max_length=200, help_text="Comma separated technologies")
     link = models.URLField(blank=True)
     readme_file = models.FileField(upload_to='readmes/', blank=True, null=True)
-    readme_content = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
