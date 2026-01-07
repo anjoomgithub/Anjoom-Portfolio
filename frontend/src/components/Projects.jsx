@@ -12,7 +12,7 @@ const Projects = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'https://anjoom-portfolio-backend.vercel.app';
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
                 const response = await axios.get(`${apiUrl}/api/projects/`);
 
                 console.log("Projects loaded:", response.data);
