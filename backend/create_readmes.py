@@ -120,33 +120,32 @@ The official corporate website for **Apexio Labs**, a software development compa
 """
 }
 
-image_urls = {
-    "DriveHub": "https://images.unsplash.com/photo-1487754158491-0f164b8ee21b?auto=format&fit=crop&q=80&w=1000",
-    "Zolvi": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1000",
-    "Deccor": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000",
-    "Online Diary": "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=1000",
-    "AI Summarizer": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000",
-    "Apexio": "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=1000",
-    "Distribution": "https://images.unsplash.com/photo-1586528116311-ad861f1ef2a3?auto=format&fit=crop&q=80&w=1000"
-}
-
 def generate_readmes():
+    media_path = os.path.join('media', 'readmes')
+    os.makedirs(media_path, exist_ok=True)
+
     projects = Project.objects.all()
 
     for project in projects:
-        # Update README content
-        matched_readme_key = next((key for key in readmes if key.lower() in project.title.lower()), None)
-        if matched_readme_key:
-            project.readme_content = readmes[matched_readme_key]
-            print(f"Updated README content for: {project.title}")
+        # Find matching key in dictionary
+        matched_key = next((key for key in readmes if key.lower() in project.title.lower()), None)
         
-        # Update Image URL
-        matched_image_key = next((key for key in image_urls if key.lower() in project.title.lower()), None)
-        if matched_image_key:
-            project.image_url = image_urls[matched_image_key]
-            print(f"Updated Image URL for: {project.title}")
+        if matched_key:
+            filename = f"{matched_key.lower().replace(' ', '_')}_readme.md"
+            filepath = os.path.join(media_path, filename)
             
-        project.save()
+            # Write content to file
+            with open(filepath, 'w') as f:
+                f.write(readmes[matched_key])
+            
+            # Attach to project
+            # absolute path needed for Django FileField usage sometimes, or relative to media root
+            # Simpler: just set the string path relative to MEDIA_ROOT
+            project.readme_file = f"readmes/{filename}"
+            project.save()
+            print(f"Attached README to: {project.title}")
+        else:
+            print(f"No specific README content found for: {project.title}, skipping or leaving existing.")
 
 if __name__ == '__main__':
     generate_readmes()
