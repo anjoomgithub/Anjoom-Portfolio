@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
+# import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -89,16 +89,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-    DATABASES['default'] = dj_database_url.config(
-        env='POSTGRES_URL',
-        conn_max_age=600,
-        # ssl_require=True  <-- Removed to let connection string handle it
-    )
-elif os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
-        # ssl_require=True  <-- Removed
-    )
 
 
 
