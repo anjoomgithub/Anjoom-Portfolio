@@ -91,8 +91,18 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# If we are on Vercel (or have a DATABASE_URL), use the cloud Postgres
+if os.environ.get('POSTGRES_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        env='POSTGRES_URL',
+        conn_max_age=600,
+        ssl_require=True
+    )
+elif os.environ.get('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
 
 
 
