@@ -19,4 +19,10 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_backend.settings')
 
-application = get_wsgi_application()
+_application = get_wsgi_application()
+
+def application(environ, start_response):
+    if environ.get('PATH_INFO') == '/ping':
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return [b'pong']
+    return _application(environ, start_response)
